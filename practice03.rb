@@ -28,10 +28,14 @@ class RefactoringTree
     include Enumerable
     attr_accessor :children, :node_name
 
-    def initialize(tree = {})
-        tree.each do | node_name, children |
-            
-        end
+    # 引数がHashの場合
+    #   HashをArrayに変換し、その先頭の要素を取り出す。
+    #   node_nameに1番目のデータ（String）を束縛する。
+    #   childrenに2番目のデータ（Hash）の各要素をRefactoringTreeに変換したデータを束縛する。
+    def initialize(tree)
+        tree = tree.to_a.first if tree.kind_of? (Hash)
+        @node_name = tree[0]
+        @children = tree[1].map { |subtree| RefactoringTree.new(subtree) }
     end
 
     def visit_all(&block)
